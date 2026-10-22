@@ -1,6 +1,16 @@
-torch
-torchvision
-wandb
-numpy
+# Pinned, not "latest" -- see docs/SETUP_NOTES.md for the full story.
+# torch's latest release at time of writing (2.14.1+cpu) fails to even
+# import on this CPU (pre-AVX-512 hardware). torch==2.4.0 fails too, on a
+# missing fbgemm.dll dependency. torch==2.2.2 is the newest version
+# confirmed to actually work here.
+#
+# scikit-learn is deliberately NOT a dependency: its scipy dependency now
+# requires numpy>=2, which conflicts with the numpy<2 that torch==2.2.2
+# needs. The linear-probe evaluation is implemented directly in PyTorch
+# instead (torch.nn.Linear + cross-entropy), which avoids the conflict
+# entirely and is better practice for this project anyway.
+torch==2.2.2
+torchvision==0.17.2
+numpy<2
 matplotlib
-scikit-learn
+wandb

@@ -108,4 +108,8 @@ A representation is only interesting if it beats doing nothing clever:
 
 ## Status
 
-Plan written. Environment setup (PyTorch) in progress. No model code written yet.
+Plan written. Environment fully set up and verified (torch 2.2.2 + torchvision 0.17.2 in
+an isolated `.venv`, after a genuinely nasty multi-layer dependency saga — see
+[`docs/SETUP_NOTES.md`](docs/SETUP_NOTES.md)). Linear probe will be implemented directly
+in PyTorch rather than with scikit-learn, for reasons also explained there. No model code
+written yet — that's next.
