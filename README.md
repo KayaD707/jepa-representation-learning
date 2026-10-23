@@ -1,4 +1,4 @@
-# JEPA & Self-Supervised Representation Learning — A 3-Part Portfolio
+# JEPA & Self-Supervised Representation Learning Portfolio
 
 ## Why this exists
 
@@ -48,6 +48,20 @@ it comes last, after A and B have built up the infrastructure and judgment to do
 well. **Not started — see
 [`project-c-predictive-coding-sensory/PLAN.md`](project-c-predictive-coding-sensory/PLAN.md).**
 
+### Project D — VICReg and the collapse problem (mechanism deep-dive)
+
+A smaller, more focused project born from a specific question about LeCun's citation
+on world-model training: *how do the two encoder functions gx/gy actually get learned
+without just collapsing to a constant?* Implements VICReg (Bardes, Ponce & LeCun,
+2022) — the cleanest available answer — as three separate, switchable loss terms, and
+runs a 3-way ablation (invariance-only / variance-only / full VICReg) on a toy 2D
+dataset where the resulting representations can be plotted directly. Confirms, visibly
+and numerically, both known failure modes: full collapse (invariance-only) and the
+subtler redundant-dimensions collapse (variance-only, no covariance term). **Toy demo
+complete — see
+[`project-d-vicreg-collapse/PLAN.md`](project-d-vicreg-collapse/PLAN.md) and
+[`docs/PROGRESS_LOG.md`](project-d-vicreg-collapse/docs/PROGRESS_LOG.md).**
+
 ## Shared practices across all three
 
 Same discipline as the Cookie Cats project, adapted from statistics to ML experiments:
@@ -73,3 +87,4 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 | A — I-JEPA on CIFAR-10 | Scoping in progress |
 | B — Contrastive vs. non-contrastive | Outlined, not started |
 | C — Predictive coding on sensory sequences | Outlined, not started |
+| D — VICReg and the collapse problem | Toy demo complete |
