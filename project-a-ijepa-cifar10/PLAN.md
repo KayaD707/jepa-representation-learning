@@ -109,7 +109,8 @@ A representation is only interesting if it beats doing nothing clever:
 ## Status
 
 Plan written. Environment fully set up and verified (torch 2.2.2 + torchvision 0.17.2 in
-an isolated `.venv`, after a genuinely nasty multi-layer dependency saga — see
-[`docs/SETUP_NOTES.md`](docs/SETUP_NOTES.md)). Linear probe will be implemented directly
-in PyTorch rather than with scikit-learn, for reasons also explained there. No model code
-written yet — that's next.
+an isolated `.venv` — see [`docs/SETUP_NOTES.md`](docs/SETUP_NOTES.md)). Data loading and
+context/target masking (`data.py`) complete and visually verified — see
+[`docs/PROGRESS_LOG.md`](docs/PROGRESS_LOG.md). Linear probe will be implemented directly
+in PyTorch rather than with scikit-learn. Not yet built: the I-JEPA model itself (context
+encoder, target encoder, predictor) and the training loop.
