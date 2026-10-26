@@ -29,11 +29,45 @@ Worth remembering: representation collapse isn't always visually obvious even wh
 it's numerically real — this is itself a useful finding about why VICReg's paper
 reports the covariance term's value explicitly rather than relying on plots.
 
+## Session 2 (2026-10-26) — CIFAR-10 stage: the mechanism, now with a real accuracy number
+
+Built `cifar_demo.py`: same 3-condition ablation (invariance-only / variance-only /
+full VICReg), now on real CIFAR-10 images with two randomly-augmented crops per image
+as the two views, trained on a 5,000-image subset (CPU budget), evaluated with the same
+linear-probing protocol as Project A (frozen encoder, linear classifier, held-out test
+accuracy).
+
+**Results (chance level = 10%):**
+
+| Condition | Mean std | Off-diagonal cov | Linear-probe accuracy |
+|---|---|---|---|
+| invariance-only | 0.0057 | 0.0000 | 24.45% |
+| variance-only | 1.0632 | 80.4580 | 28.98% |
+| full VICReg | 0.3291 | 0.0458 | **45.09%** |
+
+The ordering matches PLAN.md's prediction exactly: full VICReg clearly beats both
+ablations, and variance-only (healthy spread, but massively redundant dimensions —
+off-diagonal covariance 80.46 vs. full VICReg's 0.046, roughly 1750x higher) beats
+invariance-only but falls well short of full VICReg. This is the same story the toy
+demo told, now with a real downstream number attached: redundant dimensions aren't
+just a theoretical concern, they measurably cost accuracy.
+
+**One finding not predicted by PLAN.md, worth stating honestly:** invariance-only —
+the condition whose representation std (0.0057) shows it's about as collapsed as
+Project D's toy demo ever got — still reached 24.45% accuracy, well above the 10%
+chance level. A representation that's "collapsed" by the std diagnostic apparently
+isn't collapsed to *zero* information; some residual, non-collapsed signal (plausibly
+coming from the convolutional layers before the final collapsed projection, or from
+crude class-correlated statistics like average brightness/color that survive even a
+near-constant embedding) still leaks through enough for a linear probe to do
+noticeably better than guessing. Worth remembering: "collapse," as measured by std, is
+a matter of degree, not a clean binary — a diagnostic showing severe collapse doesn't
+mean the representation carries *zero* usable information, just dramatically less than
+a healthy one.
+
 ## Next up
 
-If continuing: scale this same three-condition ablation up to CIFAR-10 (two augmented
-crops per image as x/y, reusing Project A's `data.py` loading code), and evaluate with
-the same linear-probing protocol as Project A, per PLAN.md's second evaluation stage.
-Not started yet — the toy demo was the part that directly answered the original
-question ("how do these functions get learned without collapsing"), so stopping here
-for this session is a deliberate checkpoint, not an unfinished dangling task.
+Project D's two planned stages (toy demo, CIFAR-10 stage) are both complete. No further
+work planned here unless a new question comes up — this project was scoped tightly
+around one specific mechanism question, not meant to be extended indefinitely like
+Projects A/B/C.

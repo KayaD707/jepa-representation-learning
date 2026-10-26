@@ -139,4 +139,9 @@ Two levels, cheap first, then more realistic:
 
 ## Status
 
-Plan written. Nothing else started yet.
+Both stages complete. Toy demo (session 1) and CIFAR-10 stage (session 2) both matched
+this plan's prediction: full VICReg clearly beats both ablations, with variance-only's
+redundant-dimension failure mode confirmed quantitatively (off-diagonal covariance
+~1750x higher than full VICReg) and tied to a real accuracy cost (28.98% vs. 45.09%
+linear-probe accuracy). See `docs/PROGRESS_LOG.md` for full results and one honest
+surprise (invariance-only's "collapsed" representation still beat chance accuracy).

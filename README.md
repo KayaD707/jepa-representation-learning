@@ -63,10 +63,10 @@ without just collapsing to a constant?* Implements VICReg (Bardes, Ponce & LeCun
 runs a 3-way ablation (invariance-only / variance-only / full VICReg) on a toy 2D
 dataset where the resulting representations can be plotted directly. Confirms, visibly
 and numerically, both known failure modes: full collapse (invariance-only) and the
-subtler redundant-dimensions collapse (variance-only, no covariance term). **Toy demo
-complete; a second stage on real CIFAR-10 images (two augmented crops as the two views,
-same three-condition ablation, evaluated with Project A's linear-probing protocol) is
-running — see
+subtler redundant-dimensions collapse (variance-only, no covariance term), now
+confirmed on real CIFAR-10 images too: full VICReg reaches 45.09% linear-probe
+accuracy vs. 28.98% (variance-only, badly redundant dimensions) and 24.45%
+(invariance-only, collapsed). **Both planned stages (toy demo + CIFAR-10) complete — see
 [`project-d-vicreg-collapse/PLAN.md`](project-d-vicreg-collapse/PLAN.md) and
 [`docs/PROGRESS_LOG.md`](project-d-vicreg-collapse/docs/PROGRESS_LOG.md).**
 
@@ -95,4 +95,4 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 | A — I-JEPA on CIFAR-10 | Code complete; pretraining run in progress |
 | B — Contrastive vs. non-contrastive | Code complete; training run queued |
 | C — Predictive coding on sensory sequences | Code complete, smoke-tested; full run queued |
-| D — VICReg and the collapse problem | Toy demo complete; CIFAR-10 stage running |
+| D — VICReg and the collapse problem | Complete (toy demo + CIFAR-10 stage) |
