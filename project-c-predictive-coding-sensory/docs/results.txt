@@ -1,0 +1,10 @@
+Project C: mean squared position error (lower is better)
+Readout sanity check (MSE decoding TRUE representations to position): 0.031183
+-- this is the accuracy ceiling for any image-based method here
+(131 bounce timesteps out of 3800 total)
+
+[oracle] last-position-repeated   overall=0.000625  bounce=0.000640  non-bounce=0.000625
+[oracle] constant-velocity        overall=0.000075  bounce=0.001102  non-bounce=0.000039
+last-position-repeated            overall=0.062689  bounce=0.105146  non-bounce=0.061173
+constant-velocity                 overall=0.079639  bounce=0.121015  non-bounce=0.078162
+model (predicted representation)  overall=0.095138  bounce=0.156765  non-bounce=0.092937

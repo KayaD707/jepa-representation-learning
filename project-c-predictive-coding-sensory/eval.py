@@ -81,24 +81,37 @@ def run_recurrent_predictions(context_encoder: FrameEncoder, recurrent: Recurren
     return torch.stack(predictions, dim=1)  # (n, seq_len-1, embed_dim)
 
 
-def position_baselines(positions: torch.Tensor) -> dict:
-    """positions: (n_sequences, seq_len, 2). Returns predicted positions for t+1, for
-    t = 0 .. seq_len-2, under each baseline -- same indexing as the model's predictions,
-    so all three can be compared timestep-for-timestep.
-
-    last_repeated[:, t] predicts position[t+1] as position[t].
-    constant_velocity[:, t] predicts position[t+1] as position[t] + (position[t] -
-    position[t-1]) -- undefined for t=0 (no t-1 exists), so that column falls back to
-    last-position-repeated, the only honest choice with no velocity estimate yet.
-    """
+def _last_repeated_and_constant_velocity(positions: torch.Tensor) -> dict:
+    """Shared math for both baseline families below -- takes ANY (n, seq_len, 2)
+    position-like tensor (exact ground truth, or readout-estimated) and returns the
+    same two baseline predictions computed from it. Kept as one function so the two
+    baseline families below can't accidentally compute the math differently."""
     last_repeated = positions[:, :-1]  # predicts t+1 using position at t, for t=0..seq_len-2
 
     constant_velocity = last_repeated.clone()
-    # For t >= 1, overwrite with the constant-velocity estimate.
     displacement = positions[:, 1:-1] - positions[:, :-2]  # position[t] - position[t-1], for t=1..seq_len-2
-    constant_velocity[:, 1:] = positions[:, 1:-1] + displacement
+    constant_velocity[:, 1:] = positions[:, 1:-1] + displacement  # undefined at t=0 -> falls back to last_repeated
 
     return {"last-position-repeated": last_repeated, "constant-velocity": constant_velocity}
+
+
+def oracle_position_baselines(true_positions: torch.Tensor) -> dict:
+    """Baselines computed on the EXACT ground-truth position -- an oracle comparison,
+    included for reference only. NOT a fair comparison to the model: the model only
+    ever sees rendered pixels and has to recover position through a lossy
+    encoder + linear readout, while these baselines get the exact numbers directly.
+    See PLAN.md's post-mortem for why this distinction matters and was missed at
+    first."""
+    return {f"[oracle] {name}": pred for name, pred in _last_repeated_and_constant_velocity(true_positions).items()}
+
+
+def estimated_position_baselines(estimated_positions: torch.Tensor) -> dict:
+    """The FAIR comparison: the exact same two baseline formulas, but computed on
+    positions ESTIMATED from pixels via the same frozen encoder + linear readout the
+    model itself uses -- so every method being compared here goes through the same
+    lossy image -> representation -> position pipeline, and only the *prediction
+    mechanism* (naive physics heuristic vs. the learned recurrent model) differs."""
+    return _last_repeated_and_constant_velocity(estimated_positions)
 
 
 def main():
@@ -126,10 +139,28 @@ def main():
     with torch.no_grad():
         model_predicted_positions = readout(predicted_reprs)  # (n, seq_len-1, 2)
 
+        # Estimated position at EVERY timestep, via the same encoder+readout pipeline
+        # the model uses -- this is what makes estimated_position_baselines() a fair
+        # comparison (see its docstring, and PLAN.md's post-mortem).
+        all_frame_reprs = extract_frame_representations(context_encoder, test_dataset.frames)
+        estimated_positions = readout(all_frame_reprs)  # (n, seq_len, 2)
+
+        # Sanity check, reported alongside the results: how good is the readout itself,
+        # decoding the TRUE current frame's representation? This number is the ceiling
+        # any image-based method here could possibly reach -- if it's far from 0, that
+        # itself explains a lot of the gap against the oracle baselines.
+        readout_sanity_mse = torch.nn.functional.mse_loss(estimated_positions, test_dataset.positions).item()
+
     true_next_positions = test_dataset.positions[:, 1:]  # (n, seq_len-1, 2) -- ground truth for t+1
 
-    baselines = position_baselines(test_dataset.positions)
+    baselines = oracle_position_baselines(test_dataset.positions)
+    baselines.update(estimated_position_baselines(estimated_positions))
     baselines["model (predicted representation)"] = model_predicted_positions
+
+    print(f"\nReadout sanity check -- MSE decoding TRUE frame representations to position: "
+          f"{readout_sanity_mse:.6f}")
+    print("(this is the accuracy ceiling for ANY image-based method here -- compare the")
+    print(" oracle baselines below against THIS number, not against 0, to judge the gap fairly)")
 
     # Bounce flag per (sequence, predicted-timestep): did a bounce happen approaching
     # the frame being predicted (t+1)?
@@ -156,6 +187,8 @@ def main():
     os.makedirs("docs", exist_ok=True)
     with open("docs/results.txt", "w") as f:
         f.write("Project C: mean squared position error (lower is better)\n")
+        f.write(f"Readout sanity check (MSE decoding TRUE representations to position): {readout_sanity_mse:.6f}\n")
+        f.write("-- this is the accuracy ceiling for any image-based method here\n")
         f.write(f"({bounce_flags_next.sum().item()} bounce timesteps out of {bounce_flags_next.numel()} total)\n\n")
         for line in results_lines:
             f.write(line + "\n")

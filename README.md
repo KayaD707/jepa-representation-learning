@@ -50,8 +50,9 @@ exists for this, so the evaluation protocol was designed from scratch: a bouncin
 physics simulator (free, exact ground-truth position) and two honest baselines
 (last-position-repeated, constant-velocity extrapolation), with a specific eye on
 whether the model beats constant-velocity *at bounces*, where it's known to fail.
-**Simulator, recurrent model, training, and evaluation all implemented and
-smoke-tested; full run queued — see
+**Built, trained, and evaluated — result: a genuine negative result (model doesn't beat
+either baseline), after catching and fixing a real unfairness in the first evaluation
+attempt (see `docs/PROGRESS_LOG.md`) — see
 [`project-c-predictive-coding-sensory/PLAN.md`](project-c-predictive-coding-sensory/PLAN.md).**
 
 ### Project D — VICReg and the collapse problem (mechanism deep-dive)
@@ -94,5 +95,5 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 |---|---|
 | A — I-JEPA on CIFAR-10 | Code complete; pretraining run in progress |
 | B — Contrastive vs. non-contrastive | Code complete; training run queued |
-| C — Predictive coding on sensory sequences | Code complete, smoke-tested; full run queued |
+| C — Predictive coding on sensory sequences | Complete — honest negative result |
 | D — VICReg and the collapse problem | Complete (toy demo + CIFAR-10 stage) |

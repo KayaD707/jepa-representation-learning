@@ -90,4 +90,13 @@ same reasoning as Project D's toy-stage choice to skip it initially.
 
 ## Status
 
-Plan finalized. Code not yet written.
+Built, trained, and evaluated. **Result: a genuine negative result** — the model does
+not beat either baseline, even after catching and fixing a real unfairness in the first
+evaluation attempt (baselines were using exact ground-truth position while the model
+has to decode from pixels — see `docs/PROGRESS_LOG.md` for the full post-mortem and the
+corrected, fair comparison). The likely cause is a representation-precision ceiling in
+the frame encoder itself (position is only ~65% correlated when decoded from even the
+*true* representation), not necessarily a failure of the recurrent predictor, which
+separately achieves a reasonable ~0.032 MSE predicting the next frame's representation
+directly. Not retroactively treated as a redefinition of success — PLAN.md's criteria
+were stated before training and are reported against here honestly.
