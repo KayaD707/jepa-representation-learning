@@ -24,7 +24,8 @@ Implements a simplified Joint-Embedding Predictive Architecture (Assran et al., 
 *representation* (never the raw pixels) of the masked region. Evaluated via linear
 probing against a baseline. Chosen as the starting point because it has an established,
 standard evaluation protocol — the safest way to land a first real, defensible result
-before attempting anything more exploratory. **In progress — see
+before attempting anything more exploratory. **Model, training loop, and both baselines
+(random-init, autoencoder) built; pretraining run in progress — see
 [`project-a-ijepa-cifar10/PLAN.md`](project-a-ijepa-cifar10/PLAN.md).**
 
 ### Project B — Contrastive vs. non-contrastive self-supervised learning, compared
@@ -32,8 +33,10 @@ before attempting anything more exploratory. **In progress — see
 Trains a contrastive method (SimCLR-style) and a non-contrastive, JEPA/BYOL-style method
 on the same dataset, and compares the representations each learns. Connects to Jean
 Ponce's (ENS Paris / PRAIRIE Institute) 2026 ICLR paper on non-contrastive SSL theory.
-Builds directly on Project A's encoder and evaluation infrastructure, so it doesn't start
-from zero. **Not started — see
+Builds directly on Project A's encoder (imported directly) and Project D's VICReg loss
+(used as the non-contrastive method, rather than reimplementing BYOL) — genuine reuse,
+not starting from zero. **New NT-Xent contrastive loss implemented, both training
+scripts and shared evaluation written; training run queued — see
 [`project-b-contrastive-vs-noncontrastive/PLAN.md`](project-b-contrastive-vs-noncontrastive/PLAN.md).**
 
 ### Project C — Predictive coding on toy sensory sequences (most exploratory)
@@ -43,9 +46,12 @@ of a simple synthetic scene — directly implementing the idea from Mohammadi, H
 Zenke's "Understanding cortical computation through the lens of joint-embedding
 predictive architectures" (bioRxiv, 2025). The closest project on this list to the
 specific "comparison at the sensory level" research direction. No standard benchmark
-exists for this, so the evaluation protocol has to be designed from scratch — this is why
-it comes last, after A and B have built up the infrastructure and judgment to do that
-well. **Not started — see
+exists for this, so the evaluation protocol was designed from scratch: a bouncing-ball
+physics simulator (free, exact ground-truth position) and two honest baselines
+(last-position-repeated, constant-velocity extrapolation), with a specific eye on
+whether the model beats constant-velocity *at bounces*, where it's known to fail.
+**Simulator, recurrent model, training, and evaluation all implemented and
+smoke-tested; full run queued — see
 [`project-c-predictive-coding-sensory/PLAN.md`](project-c-predictive-coding-sensory/PLAN.md).**
 
 ### Project D — VICReg and the collapse problem (mechanism deep-dive)
@@ -58,7 +64,9 @@ runs a 3-way ablation (invariance-only / variance-only / full VICReg) on a toy 2
 dataset where the resulting representations can be plotted directly. Confirms, visibly
 and numerically, both known failure modes: full collapse (invariance-only) and the
 subtler redundant-dimensions collapse (variance-only, no covariance term). **Toy demo
-complete — see
+complete; a second stage on real CIFAR-10 images (two augmented crops as the two views,
+same three-condition ablation, evaluated with Project A's linear-probing protocol) is
+running — see
 [`project-d-vicreg-collapse/PLAN.md`](project-d-vicreg-collapse/PLAN.md) and
 [`docs/PROGRESS_LOG.md`](project-d-vicreg-collapse/docs/PROGRESS_LOG.md).**
 
@@ -84,7 +92,7 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 
 | Project | Status |
 |---|---|
-| A — I-JEPA on CIFAR-10 | Scoping in progress |
-| B — Contrastive vs. non-contrastive | Outlined, not started |
-| C — Predictive coding on sensory sequences | Outlined, not started |
-| D — VICReg and the collapse problem | Toy demo complete |
+| A — I-JEPA on CIFAR-10 | Code complete; pretraining run in progress |
+| B — Contrastive vs. non-contrastive | Code complete; training run queued |
+| C — Predictive coding on sensory sequences | Code complete, smoke-tested; full run queued |
+| D — VICReg and the collapse problem | Toy demo complete; CIFAR-10 stage running |
