@@ -74,4 +74,8 @@ similarly useful downstream — or does one clearly win, and if so, why?
 
 ## Status
 
-Plan finalized. Code not yet written.
+Complete. Result: both methods clearly beat the random-init floor (random-init 29.11%,
+contrastive 50.07%, non-contrastive/VICReg 53.85%); VICReg wins by a modest 3.8pp
+margin, plausibly explained by the named batch-size-sensitivity risk (batch size 256 is
+small by SimCLR's own standards) rather than a fundamental advantage. See
+`docs/PROGRESS_LOG.md` for full results and reasoning.

@@ -1,0 +1,4 @@
+Project B linear probe test accuracy (chance level = 10.00%)
+random-init: 29.11%
+contrastive (NT-Xent): 50.07%
+non-contrastive (VICReg): 53.85%

@@ -35,8 +35,10 @@ on the same dataset, and compares the representations each learns. Connects to J
 Ponce's (ENS Paris / PRAIRIE Institute) 2026 ICLR paper on non-contrastive SSL theory.
 Builds directly on Project A's encoder (imported directly) and Project D's VICReg loss
 (used as the non-contrastive method, rather than reimplementing BYOL) — genuine reuse,
-not starting from zero. **New NT-Xent contrastive loss implemented, both training
-scripts and shared evaluation written; training run queued — see
+not starting from zero. **Complete — both methods clearly beat the random-init floor
+(29.11%); non-contrastive (VICReg) edges out contrastive (NT-Xent) 53.85% vs 50.07%, a
+modest gap plausibly explained by contrastive learning's known batch-size sensitivity —
+see
 [`project-b-contrastive-vs-noncontrastive/PLAN.md`](project-b-contrastive-vs-noncontrastive/PLAN.md).**
 
 ### Project C — Predictive coding on toy sensory sequences (most exploratory)
@@ -94,6 +96,6 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 | Project | Status |
 |---|---|
 | A — I-JEPA on CIFAR-10 | Code complete; pretraining run in progress |
-| B — Contrastive vs. non-contrastive | Code complete; training run queued |
+| B — Contrastive vs. non-contrastive | Complete — VICReg 53.85% vs NT-Xent 50.07% |
 | C — Predictive coding on sensory sequences | Complete — honest negative result |
 | D — VICReg and the collapse problem | Complete (toy demo + CIFAR-10 stage) |
