@@ -1,0 +1,4 @@
+Linear probe test accuracy (chance level = 10.00%)
+random-init: 29.11%
+autoencoder: 40.44%
+i-jepa: 26.09%

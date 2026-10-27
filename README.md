@@ -24,8 +24,13 @@ Implements a simplified Joint-Embedding Predictive Architecture (Assran et al., 
 *representation* (never the raw pixels) of the masked region. Evaluated via linear
 probing against a baseline. Chosen as the starting point because it has an established,
 standard evaluation protocol — the safest way to land a first real, defensible result
-before attempting anything more exploratory. **Model, training loop, and both baselines
-(random-init, autoencoder) built; pretraining run in progress — see
+before attempting anything more exploratory. **Complete — a genuine negative result:**
+I-JEPA scored 26.09% linear-probe accuracy, below even the untrained random-init
+baseline (29.11%) and well below the autoencoder baseline (40.44%). No collapse
+occurred; the shortfall traces to this project's own stated simplification (a CNN with
+one global pooled vector, not a ViT with per-patch representations) — tested against a
+competing explanation (train/eval distribution mismatch) that was ruled out directly.
+See
 [`project-a-ijepa-cifar10/PLAN.md`](project-a-ijepa-cifar10/PLAN.md).**
 
 ### Project B — Contrastive vs. non-contrastive self-supervised learning, compared
@@ -95,7 +100,7 @@ Same discipline as the Cookie Cats project, adapted from statistics to ML experi
 
 | Project | Status |
 |---|---|
-| A — I-JEPA on CIFAR-10 | Code complete; pretraining run in progress |
+| A — I-JEPA on CIFAR-10 | Complete — honest negative result (26.09% vs 40.44% autoencoder) |
 | B — Contrastive vs. non-contrastive | Complete — VICReg 53.85% vs NT-Xent 50.07% |
 | C — Predictive coding on sensory sequences | Complete — honest negative result |
 | D — VICReg and the collapse problem | Complete (toy demo + CIFAR-10 stage) |

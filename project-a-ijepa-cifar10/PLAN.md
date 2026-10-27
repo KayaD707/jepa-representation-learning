@@ -108,9 +108,15 @@ A representation is only interesting if it beats doing nothing clever:
 
 ## Status
 
-Plan written. Environment fully set up and verified (torch 2.2.2 + torchvision 0.17.2 in
-an isolated `.venv` — see [`docs/SETUP_NOTES.md`](docs/SETUP_NOTES.md)). Data loading and
-context/target masking (`data.py`) complete and visually verified — see
-[`docs/PROGRESS_LOG.md`](docs/PROGRESS_LOG.md). Linear probe will be implemented directly
-in PyTorch rather than with scikit-learn. Not yet built: the I-JEPA model itself (context
-encoder, target encoder, predictor) and the training loop.
+Complete. **Result: a genuine negative result against this plan's own minimum bar.**
+Linear-probe accuracy: autoencoder 40.44%, random-init 29.11%, I-JEPA 26.09% — I-JEPA
+did not clearly exceed random-init, and lost clearly to the autoencoder baseline. No
+representational collapse occurred (representation std stayed healthy, 0.48–0.53,
+throughout training) — the shortfall traces to the stated architectural simplification
+(small CNN + single global pooled vector, instead of a ViT with per-patch
+representations), not a training bug. A competing hypothesis (train/eval distribution
+mismatch, since the encoder only ever saw masked images during training) was tested
+directly and ruled out before accepting this explanation. Full reasoning in
+[`docs/PROGRESS_LOG.md`](docs/PROGRESS_LOG.md) (Session 3). This result was explicitly
+anticipated as a valid, reportable possibility in this plan's own "being honest in
+advance" section — not a failed project.
